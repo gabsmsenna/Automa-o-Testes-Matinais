@@ -1,22 +1,37 @@
-import openpyxl
-from urllib.parse import quote
-import webbrowser
-from time import sleep
+import pandas as pd
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+import urllib
 
-webbrowser.open('https://web.whatsapp.com/')
-sleep(15)
-
-workbook = openpyxl.load_workbook('Planilha contatos teste.xlsx')
-pagina_contatos = workbook['Página1']
-
-for linha in pagina_contatos.iter_rows(min_row = 1):
-    cliente = linha[0].value
-    telefone = str(linha[1].value).rstrip('.0')
-    mensagem = f'status@escallo'
-
-    url_msg = f'https://web.whatsapp.com/send?phone={telefone}&text={quote(mensagem)}'
-    webbrowser.open(url_msg)
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
+contatos = pd.read_excel('contatos.xlsx')
+print(contatos)
+
+navegador = webdriver.Firefox()
+navegador.get('https://web.whatsapp.com/')
+
+while len(navegador.find_elements(By.ID, "side")) < 1:
+      time.sleep(2)
 
 
+for i, mensagem in enumerate(contatos['Mensagem']):
+    cliente = contatos.loc[i,'Cliente']
+    numero = contatos.loc[i, 'Número']
+    texto = urllib.parse.quote(f'Oi {cliente}')
+    link = f'https://web.whatsapp.com/send?phone={numero}&text={texto}'
+    navegador.get(link)
+   
+    while len(navegador.find_elements(By.ID, "side")) < 1:
+     time.sleep(6)
+     
+     botao_enviar = WebDriverWait(navegador, 30).until(
+    EC.presence_of_element_located((By.CSS_SELECTOR, 'button.tvf2evcx'))
+    )
+     
+     botao_enviar.send_keys(Keys.ENTER)
+     time.sleep(10)

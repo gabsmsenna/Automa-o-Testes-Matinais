@@ -10,7 +10,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 contatos = pd.read_excel('contatos.xlsx')
-print(contatos)
 
 navegador = webdriver.Firefox()
 navegador.get('https://web.whatsapp.com/')

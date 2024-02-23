@@ -27,7 +27,7 @@ def enviar_mensagem(navegador, numero, texto):
 
 def verificar_resposta(navegador, numero):
     try:
-        elementosParaValidarResposta = [
+        elemento = [
         'span.message-text.selectable-text.emoji-text',
         'span.message-in',
         'div.message-bubble',
@@ -35,10 +35,10 @@ def verificar_resposta(navegador, numero):
         'span.message-text.selectable-text.emoji-text.left',
         'span.message-text.selectable-text.left'
         ]
-        for elemento in elementosParaValidarResposta:
+        for elemento in elemento:
             try:
                 WebDriverWait(navegador, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, elementosParaValidarResposta))
+                    EC.presence_of_element_located((By.CSS_SELECTOR, elemento))
                 )
                 return f"Mensagem enviada para {numero}"
             except TimeoutException:
